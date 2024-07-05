@@ -33,36 +33,33 @@ class Embedding(nn.Module):
     
 # 위치 인코딩(Positional Embedding)
 class PositionalEncoding(nn.Module):
-    def __init__(self, max_seq_len, d_model):
-        """
-        입력 - max_seq_len : input sequence의 최대 길이
-              d_model : 임베딩 차원
-        """
+    def __init__(self, emb_size: int,
+                       dropout: float,
+                       maxlen: int = 5000):
         super(PositionalEncoding, self).__init__()
-        self.d_model = d_model
         
-        pe = torch.zeros(max_seq_len, self.d_model) # 포지셔널 인코딩 벡터 -> 모든 자리에 초기값 0으로 설정
-        for pos in range(max_seq_len):
-            for i in range(0, self.d_model, 2): # 0, 2, 4... 
-                pe[pos, i] = math.sin(pos / (10000 ** (i/self.d_model))) # 짝수 차원 -> 싸인 (0->0, 2->2..)
-                if i + 1 < self.d_model: # d_model이 홀수인 경우 range 벗어날 수 있어서 if문 추가해줌
-                    pe[pos, i+1] = math.cos(pos/ (10000 ** (i/self.d_model))) # 홀수 차원 -> 코싸인 (1->0, 3->2, 5->4....)
-        pe = pe.unsqueeze(0) # [max_seq_len, d_model] 차원 -> [1, max_seq_len, d_model] 차원으로 1차원 앞에 추가해줌 (예 : [6, 4] -> [1, 6, 4])
-        # 해주는 이유 : input shape이 [batch_size, seq_len, d_model] 이기 때문이다!! (임베딩 결과값이랑 더해야되니깐 shape 맞춰주는거임)
+        # 위치 정의
+        pos = torch.arange(0, maxlen).reshape(maxlen, 1)
+        # 위치에 곱해줄 값 정의
+        den = torch.exp(-torch.arange(0, emb_size, 2) * math.log(10000) / emb_size)
+        # 포지셔널 인코딩 벡터 초기값 설정 (모든 자리 0으로 시작)
+        pe = torch.zeros((maxlen, emb_size))
+        # 포지셔널 인코딩 마지막 차원이 짝수일 때 (슬라이싱 0::2 -> 0부터 시작해서 스텝 2씩이니까 짝수)
+        pe[:, 0::2] = torch.sin(pos * den) # 싸인함수
+        # 포지셔널 인코딩 마지막 차원이 홀수일 때 (슬라이싱 1::2 -> 1부터 시작해서 스텝 2씩이니까 홀수)
+        pe[:, 1::2] = torch.cos(pos * den) # 코싸인함수
+        # 차원 추가
+        pe = pe.unsqueeze(-2) # 해주는 이유 : input shape이 [batch_size, seq_len, d_model] 이기 때문이다!! (임베딩 결과값이랑 더해야되니깐 shape 맞춰주는거임)
+        
+        self.droupout = nn.Dropout(dropout) # dropout 추가
         self.register_buffer('pe', pe) # pe 벡터를 buffer로 register : state_dict()에는 parameter와 buffer가 있는데, 그 중 buffer로 등록 -> 학습할때 update 되지 않도록 고정 
         
-    def forward(self, x):
-        """
-        Args:
-            x: input vector
-        Returns:
-            x: output
-        """
-        
-        # √d_model을 곱해주겠다고 논문 3.4장에 밝히고 있음
-        x = x * math.sqrt(self.d_model)
-        seq_len = x.size(1) # 각 시퀀스가 몇개의 토큰인지 숫자를 뽑아냄 (max_seq_len이 6이라면 6 이하의 숫자일것)
-        x = x + self.pe[:, :seq_len].to(x.device) # 길이 맞춰서 pe랑 더해줌!!!
+    def forward(self, embedding: torch.Tensor):  
+        pe = self.pe[:, :embedding.size(0), :]
+        embedding = embedding + pe
+        return self.droupout(embedding)
+
+
 
 # 임베딩 + 포지셔널 인코딩 -> "트랜스포머 임베딩" 만들어주기
 class TransformerEmbedding(nn.Module):
@@ -109,3 +106,5 @@ class PositionwiseFeedForward(nn.Module):
         x = self.linear2(x)
         return x
         
+
+# %%
