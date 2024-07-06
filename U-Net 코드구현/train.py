@@ -1,3 +1,10 @@
+"""
+    @ author : Seul Kim
+    @ when : Jan 01, 2024
+    @ contact : niceonesuri@gmail.com
+    @ blog : https://smartest-suri.tistory.com/
+"""
+
 #%%
 
 import torch

@@ -10,4 +10,3 @@ Transformer 논문을 직접 읽고 리뷰한 뒤 코드로 구현했습니다.
 
 ## 사용한 데이터
 ** 추가 예정입니다 **
-> https://www.kaggle.com/datasets/faizalkarim/flood-area-segmentation
