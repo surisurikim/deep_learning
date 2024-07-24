@@ -57,4 +57,7 @@
 
 ## 예시
 
-PDF 문서를 사용하고 질문을 입력하면 관련 있는 답변을 받습니다.
+* PDF 문서를 사용하고 질문을 입력하면 관련 있는 답변을 받습니다.
+  
+![image.jpg1](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbzH8LL%2FbtsIMQ0jhZP%2F4kSAc1oNV2ZtqmsmcNi6Qk%2Fimg.png) |![image.jpg2](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FFp1hm%2FbtsILgFKWqs%2FIqpLbTfHPhohXGq1t0lNHk%2Fimg.png)
+--- | --- | 
