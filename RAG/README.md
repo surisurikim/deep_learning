@@ -33,9 +33,14 @@
     ```
 2. 필요한 라이브러리를 설치합니다:
     ```bash
-    pip install pdfplumber pytesseract ollama gradio langchain
+    pip install pdfplumber pytesseract ollama gradio langchain langchain_community chromadb
     ```
-
+3. 필요한 모델을 설치합니다.
+    ```bash
+    ollama pull llama3.1
+    ollama pull mxbai-embed-large
+    ```
+    
 ## 사용법
 
 1. **스크립트 실행**: Gradio 인터페이스를 실행합니다:
