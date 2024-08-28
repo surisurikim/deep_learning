@@ -57,7 +57,7 @@ def rag_chain(file, question):
     retrieved_docs = retriever.get_relevant_documents(question)  # 가장 관련성이 높은 문서를 벡터 저장소에서 검색, 리스트로 생성
     formatted_context = format_docs(retrieved_docs) # 하나의 string으로 변환
     formatted_prompt = f"Question: {question}\n\nContext: {formatted_context}"
-    response = ollama.chat(model='llama3', 
+    response = ollama.chat(model='llama3.1', 
                            messages=[
                                 {"role": "system",
                                  "content": "You are a helpful assistant. Check the pdf content and answer the question."
